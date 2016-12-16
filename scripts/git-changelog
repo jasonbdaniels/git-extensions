@@ -1,0 +1,11 @@
+#!/bin/bash
+
+log_options='--pretty="format:- %s" -i --grep="add" --grep="fix" --grep="remove" --grep="update"'
+
+if [ -z "$1" ]; then
+	eval "git log --max-count=50 ${log_options}"
+else
+	eval "git log --since=\"$1\" ${log_options}"
+fi
+
+echo ""
