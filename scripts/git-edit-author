@@ -1,0 +1,32 @@
+#!/bin/sh
+
+NO_COLOR='\033[0m'
+RED_COLOR='\033[0;31m'
+ORANGE_COLOR='\033[0;33m'
+
+echo ""
+echo "${RED_COLOR}Warning${NO_COLOR}: This action is destructive to your repository's history. If you're collaborating on a repository with others, it's considered bad practice to rewrite published history. You should only do this in an emergency."
+echo ""
+
+read -p "Old Email: " OLD_EMAIL
+read -p "New Email: " CORRECT_EMAIL
+read -p "New Name: " CORRECT_NAME
+
+echo ""
+echo "${ORANGE_COLOR}Note${NO_COLOR}: Running this script rewrites history for all repository collaborators. After completing these steps, any person with forks or clones must fetch the rewritten history and rebase any local changes into the rewritten history."
+
+read -p "Continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+
+git filter-branch --env-filter '
+
+if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]
+then
+export GIT_COMMITTER_NAME="$CORRECT_NAME"
+export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"
+fi
+if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]
+then
+export GIT_AUTHOR_NAME="$CORRECT_NAME"
+export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"
+fi
+' --tag-name-filter cat -- --branches --tags
