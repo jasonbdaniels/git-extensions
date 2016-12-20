@@ -4,6 +4,8 @@ log_options='--pretty="format:- %s" -i --grep="^add" --grep="^fix" --grep="^remo
 
 if [ -z "$1" ]; then
 	eval "git log --max-count=50 ${log_options}"
+elif [ "$1" == "-a" ]; then
+	eval "git log ${log_options}"
 else
 	eval "git log --since=\"$1\" ${log_options}"
 fi
